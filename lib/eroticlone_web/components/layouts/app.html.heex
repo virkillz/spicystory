@@ -1,4 +1,12 @@
     <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
+        <li>
+          <.link
+            href={~p"/"}
+            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+          >
+            Home
+          </.link>
+        </li>
       <%= if @current_user do %>
         <li class="text-[0.8125rem] leading-6 text-zinc-900">
           <%= @current_user.email %>
@@ -43,12 +51,9 @@
 <header class="px-4 sm:px-6 lg:px-8">
   <div class="flex items-center justify-between border-b border-zinc-100 py-3 text-sm">
     <div class="flex items-center gap-4">
-      <a href="/">
-        <img src={~p"/images/logo.png"} width="36" />
+      <a href="/" class="text-4xl">
+        🌶️
       </a>
-      <p class="bg-brand/5 text-brand rounded-full px-2 font-medium leading-6">
-        v<%= Application.spec(:phoenix, :vsn) %>
-      </p>
     </div>
     <div class="flex items-center gap-4 font-semibold leading-6 text-zinc-900">
           <a
@@ -74,7 +79,7 @@
         href="/randomize"
         class="rounded-lg bg-zinc-100 px-2 py-1 hover:bg-zinc-200/80"
       >
-        Get Random Story <span aria-hidden="true">&rarr;</span>
+        Shuffle Story <span aria-hidden="true">&rarr;</span>
       </a>
     </div>
   </div>

@@ -261,9 +261,15 @@ defmodule Eroticlone do
     end
   end
 
-  # Eroticlone.generate_remote_image("the-erotic-adventures-of-superman")
+  # Eroticlone.generate_remote_image("a-serving-girls-tale")
   def generate_remote_image(slug) do
-    case HTTPoison.get(@remote_url <> "api/stories/#{slug}") do
+    headers = [
+      "content-type": "application/json"
+    ]
+
+    options = [ssl: [{:versions, [:"tlsv1.2"]}], recv_timeout: 50000]
+
+    case HTTPoison.get(@remote_url <> "api/stories/#{slug}", headers, options) do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         story = Jason.decode!(body)
 
@@ -271,7 +277,7 @@ defmodule Eroticlone do
           {:error, "No image prompt found"}
         else
           prompt = %{
-            prompt: story.image_prompt,
+            prompt: story["image_prompt"],
             width: 384,
             height: 512
           }
@@ -280,7 +286,9 @@ defmodule Eroticlone do
             {:ok, file_raw} ->
               HTTPoison.post(
                 @remote_url <> "api/stories/#{slug}",
-                Jason.encode!(%{"image_raw" => file_raw})
+                Jason.encode!(%{"story" => %{"image_raw" => file_raw}}),
+                headers,
+                options
               )
 
             {:error, _} ->

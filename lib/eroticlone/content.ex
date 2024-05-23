@@ -52,7 +52,7 @@ defmodule Eroticlone.Content do
       from s in Story,
         where: s.is_bookmarked == true,
         preload: [:pages],
-        order_by: s.id
+        order_by: [desc: s.updated_at]
 
     Repo.paginate(query, params)
   end
