@@ -1,0 +1,16 @@
+<.table id="book_authors" rows={@stories} row_click={&JS.navigate(~p"/stories/#{&1}")}>
+  <:col :let={book_author} label="ID"><%= book_author.id %></:col>
+  <:col :let={book_author} label="Image">
+
+
+  <img src={"/images/#{book_author.image}"} alt={book_author.title} class="w-40" />
+
+  </:col>
+  <:col :let={book_author} label="Title">
+  <%= book_author.title %>
+  <div class="text-muted text-xs">
+    <%= book_author.tagline %>
+    </div>
+  </:col>
+  <:col :let={book_author} label="Category"><%= book_author.category %></:col>
+</.table>

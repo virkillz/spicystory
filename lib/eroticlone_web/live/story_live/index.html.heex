@@ -1,0 +1,43 @@
+<.header>
+  Listing Stories
+  <:actions>
+    <.link patch={~p"/stories/new"}>
+      <.button>New Story</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="stories"
+  rows={@streams.stories}
+  row_click={fn {_id, story} -> JS.navigate(~p"/stories/#{story}") end}
+  phx-update="stream"
+>
+  <:col :let={{_id, story}} label="ID"><%= story.id %></:col>
+  <:col :let={{_id, story}} label="Title">
+  <%= story.title %>
+  <div class="text-xs"><%= story.tagline %></div>
+  </:col>
+  <:col :let={{_id, story}} label="Author">
+
+  <.link navigate={~p"/authors/#{story.author}"} class="text-indigo-400"><%= story.author %></.link>
+
+  </:col>
+  <:col :let={{_id, story}} label="Rating"><%= story.rating %></:col>
+  <:col :let={{_id, story}} label="Category"><%= story.category %></:col>
+  <:col :let={{_id, story}} label="Image"><%= story.slug %></:col>
+  <:col :let={{_id, story}} label="Status"><%= story.status %></:col>
+</.table>
+
+<.paginate items={@page} conn={@conn}/>
+
+<.modal :if={@live_action in [:new, :edit]} id="story-modal" show on_cancel={JS.patch(~p"/stories")}>
+  <.live_component
+    module={EroticloneWeb.StoryLive.FormComponent}
+    id={@story.id || :new}
+    title={@page_title}
+    action={@live_action}
+    story={@story}
+    patch={~p"/stories"}
+  />
+</.modal>

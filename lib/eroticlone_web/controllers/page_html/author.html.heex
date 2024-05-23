@@ -1,0 +1,16 @@
+<div class="flex justify-between items-center">
+  <h1 class="text-2xl font-bold">Author</h1>
+</div>
+
+<.table id="book_authors" rows={@stories} row_click={&JS.navigate(~p"/stories/#{&1}")}>
+  <:col :let={book_author} label="ID"><%= book_author.id %></:col>
+  <:col :let={book_author} label="Title">
+  <%= book_author.title %>
+  <div class="text-muted text-xs">
+    <%= book_author.tagline %>
+    </div>
+  </:col>
+    <:col :let={book_author} label="Rating"><%= book_author.rating %></:col>
+  <:col :let={book_author} label="Category"><%= book_author.category %></:col>
+  <:col :let={book_author} label="Metadata"><%= book_author.metadata %></:col>
+</.table>
