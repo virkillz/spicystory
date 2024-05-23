@@ -36,7 +36,7 @@
 <div class="text-justify font-serif mt-16">
 
   <%= if not is_nil(@story.image) do %>
-  <img src={"/images/#{@story.image}"} alt={@story.title} class="mt-0 mb-11 float-right ml-8 rounded-lg shadow-lg">
+  <img src={"/images/#{@story.image}"} alt={@story.title} class="mt-0 mb-11 lg:float-right lg:ml-8 rounded-lg shadow-lg">
   <% end %>
 
   <%= raw(@story.content) %>
