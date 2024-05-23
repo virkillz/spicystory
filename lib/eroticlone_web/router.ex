@@ -23,7 +23,6 @@ defmodule EroticloneWeb.Router do
 
     get "/show/:slug", PageController, :show
     get "/", PageController, :home
-    get "/random", PageController, :random
     get "/randomize", PageController, :randomize
     get "/dashboard", PageController, :dashboard
     get "/stories/:id/fetch_pages", PageController, :get_remaining_pages
@@ -71,7 +70,8 @@ defmodule EroticloneWeb.Router do
   scope "/", EroticloneWeb do
     pipe_through [:browser, :require_authenticated_user]
 
-    get "/bookmarks", PageController, :bookmark_index
+    get "/random", PageController, :random
+    get "/published", PageController, :published_index
     get "/authors/:author", PageController, :author_index
 
     live_session :require_authenticated_user,

@@ -47,12 +47,13 @@ defmodule Eroticlone.Content do
     Repo.all(query)
   end
 
-  def list_bookmarked_stories do
+  def list_bookmarked_stories(params) do
     query =
       from s in Story,
-        where: s.is_bookmarked == true
+        where: s.is_bookmarked == true,
+        preload: [:pages]
 
-    Repo.all(query)
+    Repo.paginate(query, params)
   end
 
   def list_stories_with_empty_slug(limit) do
@@ -129,6 +130,8 @@ defmodule Eroticlone.Content do
 
   """
   def get_story!(id), do: Repo.get!(Story, id) |> Repo.preload(:pages)
+
+  def get_story(id), do: Repo.get(Story, id) |> Repo.preload(:pages)
 
   def get_random_story do
     query =

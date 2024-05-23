@@ -269,7 +269,7 @@ defmodule Eroticlone do
         height: 768
       }
 
-      case DrawThings.draw(prompt) do
+      case DrawThings.draw(prompt, story) do
         {:ok, file_name} ->
           Content.update_story(story, %{"image" => file_name})
 
@@ -339,34 +339,125 @@ defmodule Eroticlone do
     end
   end
 
+  # Eroticlone.sync_all_stories(41112, 50000)
+  def sync_all_stories(start, finish) do
+    start..finish
+    |> Enum.each(fn id ->
+      IO.inspect("Processing #{id}")
+
+      case post_story(id) do
+        {:ok, _} ->
+          IO.inspect("Success")
+
+        {:error, _} ->
+          IO.inspect("Error")
+      end
+    end)
+  end
+
+  # Eroticlone.story_to_md(3)
+  def story_to_md(story_id) do
+    story = Content.get_story(story_id)
+
+    if is_nil(story) do
+      {:error, "Story not found"}
+    else
+      {:ok, parsed} = Floki.parse_document(story.content)
+
+      [{"div", [{"class", "aa_ht"}], [{"div", [], content}]}] = parsed
+
+      result =
+        content
+        |> Enum.map(&parse_line/1)
+        |> Enum.map(fn x ->
+          """
+          #{x}
+
+
+
+          """
+        end)
+        |> Enum.join("")
+
+      new_content = """
+      # #{story.title}
+
+
+      *#{story.tagline}*
+
+
+      #{result}
+
+
+      """
+
+      File.write("story_#{story_id}.md", new_content)
+    end
+  end
+
+  defp parse_line(line) do
+    case line do
+      {"p", [], [text]} ->
+        Floki.text(line)
+
+      {"p", [], [text, {"br", [], []}]} ->
+        text <> "<br />"
+
+      {"p", [], _other} ->
+        Floki.text(line)
+
+        # other ->
+        #   IO.inspect(other, label: "anomaly detected")
+    end
+  end
+
   def post_story(story_id) do
-    story = Content.get_story!(story_id)
+    story = Content.get_story(story_id)
 
-    attrs = %{
-      "link" => story.link,
-      "author" => story.author,
-      "rating" => story.rating,
-      "status" => story.status,
-      "image" => story.image,
-      "category" => story.category,
-      "is_bookmarked" => story.is_bookmarked,
-      "image_prompt" => story.image_prompt,
-      "content" => story.content,
-      "title" => story.title,
-      "tagline" => story.tagline,
-      "fav" => story.fav,
-      "metadata" => story.metadata,
-      "is_read" => story.is_read,
-      "is_approved" => story.is_approved,
-      "slug" => story.slug
-    }
+    if is_nil(story) do
+      {:error, "Story not found"}
+    else
+      attrs = %{
+        "link" => story.link,
+        "author" => story.author,
+        "rating" => story.rating,
+        "status" => story.status,
+        "image" => story.image,
+        "category" => story.category,
+        "is_bookmarked" => story.is_bookmarked,
+        "image_prompt" => story.image_prompt,
+        "content" => story.content,
+        "title" => story.title,
+        "tagline" => story.tagline,
+        "fav" => story.fav,
+        "metadata" => story.metadata,
+        "is_read" => story.is_read,
+        "is_approved" => story.is_approved,
+        "slug" => story.slug
+      }
 
-    case HTTPoison.post("http://34.128.83.247/api/stories", attrs) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
-        IO.inspect(body)
+      url = "http://34.128.83.247/api/stories"
 
-      {:error, %HTTPoison.Error{reason: reason}} ->
-        IO.inspect(reason)
+      headers = [
+        "content-type": "application/json"
+      ]
+
+      options = [ssl: [{:versions, [:"tlsv1.2"]}], recv_timeout: 50000, timeout: 20000]
+      body = Jason.encode!(attrs)
+
+      case HTTPoison.post(url, body, headers, options) do
+        {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+          IO.inspect(body)
+          {:ok, body}
+
+        {:error, %HTTPoison.Error{reason: reason}} ->
+          IO.inspect(reason)
+          {:error, reason}
+
+        error ->
+          IO.inspect(error)
+          {:error, "Cannot create story"}
+      end
     end
   end
 end

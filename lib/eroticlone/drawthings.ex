@@ -5,7 +5,7 @@ defmodule DrawThings do
 
   @url "http://localhost:7860/sdapi/v1/txt2img"
 
-  def draw(prompt) do
+  def draw(prompt, story) do
     url = @url
 
     headers = [
@@ -19,7 +19,7 @@ defmodule DrawThings do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         case Jason.decode(body) do
           {:ok, %{"images" => images}} ->
-            images |> List.first() |> save_image()
+            images |> List.first() |> save_image(story)
 
           _other ->
             {:error, "Cannot create images"}
@@ -31,12 +31,12 @@ defmodule DrawThings do
     end
   end
 
-  def save_image(image) do
+  def save_image(image, story) do
     location = Path.absname("priv/static/images/")
-    file_name = Nanoid.generate() <> ".png"
+    file_name = Nanoid.generate() <> "image_#{story.id}.png"
     path = "#{location}/#{file_name}"
 
-    File.write(path, Base.decode64!(image)) |> IO.inspect()
+    File.write(path, Base.decode64!(image))
 
     {:ok, file_name}
   end

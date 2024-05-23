@@ -36,10 +36,10 @@ defmodule EroticloneWeb.PageController do
     render(conn, "dashboard.html", data: data)
   end
 
-  def bookmark_index(conn, _params) do
-    stories = Content.list_bookmarked_stories()
+  def published_index(conn, params) do
+    stories = Content.list_bookmarked_stories(params)
 
-    render(conn, "bookmark.html", stories: stories)
+    render(conn, "published.html", stories: stories)
   end
 
   def author_index(conn, %{"author" => author}) do

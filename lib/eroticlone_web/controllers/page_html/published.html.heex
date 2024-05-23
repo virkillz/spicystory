@@ -1,0 +1,24 @@
+<.table
+  id="stories"
+  rows={@stories}
+  row_click={&JS.navigate(~p"/stories/#{&1}")}
+>
+  <:col :let={story} label="Category"><%= story.category %></:col>
+  <:col :let={story} label="Title">
+  <%= story.title %>
+  <div class="text-xs"><%= story.tagline %></div>
+  </:col>
+  <:col :let={story} label="Slug">
+
+  <%= story.slug %>
+
+  </:col>
+  <:col :let={story} label="Page"><%= story.pages |> Enum.count %></:col>
+  <:col :let={story} label="Max Page"><%= (story.metadata |> Jason.decode! |> Map.get("max_page")) || "0" %></:col>
+  <:col :let={story} label="View">
+  <%= story.metadata |> Jason.decode!() |> Map.get("view") %>
+  </:col>
+  <:col :let={story} label="Image"><%= story.image %></:col>
+</.table>
+
+<.paginate items={@stories} conn={@conn}/>
