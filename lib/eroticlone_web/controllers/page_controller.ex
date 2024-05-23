@@ -6,11 +6,24 @@ defmodule EroticloneWeb.PageController do
   def show(conn, %{"slug" => slug}) do
     story = Content.get_story_by_slug(slug)
     next_story = Content.get_random_story()
+    pages = story.pages |> Enum.map(& &1.content)
+
+    time_to_read =
+      [story.content | pages]
+      |> Enum.join(" ")
+      |> String.split(" ")
+      |> Enum.count()
+      |> div(200)
 
     if is_nil(story) do
       conn |> put_status(404) |> text("404")
     else
-      render(conn, "home.html", story: story, next_url: next_story.slug, layout: false)
+      render(conn, "home.html",
+        story: story,
+        next_url: next_story.slug,
+        time_to_read: time_to_read,
+        layout: false
+      )
     end
   end
 
