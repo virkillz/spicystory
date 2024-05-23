@@ -16,8 +16,6 @@ defmodule EroticloneWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
-
-    post "/stories", EroticloneWeb.PageController, :post_story
   end
 
   scope "/", EroticloneWeb do
@@ -31,10 +29,11 @@ defmodule EroticloneWeb.Router do
     get "/stories/:id/fetch_pages", PageController, :get_remaining_pages
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", EroticloneWeb do
-  #   pipe_through :api
-  # end
+  scope "/api", EroticloneWeb do
+    pipe_through :api
+
+    post "/stories", PageController, :post_story
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:eroticlone, :dev_routes) do

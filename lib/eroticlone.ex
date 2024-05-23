@@ -338,4 +338,35 @@ defmodule Eroticlone do
       end)
     end
   end
+
+  def post_story(story_id) do
+    story = Content.get_story!(story_id)
+
+    attrs = %{
+      "link" => story.link,
+      "author" => story.author,
+      "rating" => story.rating,
+      "status" => story.status,
+      "image" => story.image,
+      "category" => story.category,
+      "is_bookmarked" => story.is_bookmarked,
+      "image_prompt" => story.image_prompt,
+      "content" => story.content,
+      "title" => story.title,
+      "tagline" => story.tagline,
+      "fav" => story.fav,
+      "metadata" => story.metadata,
+      "is_read" => story.is_read,
+      "is_approved" => story.is_approved,
+      "slug" => story.slug
+    }
+
+    case HTTPoison.post("http://34.128.83.247/api/stories", attrs) do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        IO.inspect(body)
+
+      {:error, %HTTPoison.Error{reason: reason}} ->
+        IO.inspect(reason)
+    end
+  end
 end
