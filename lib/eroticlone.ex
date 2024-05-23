@@ -1,5 +1,8 @@
 defmodule Eroticlone do
+  alias Hex.HTTP
   alias Eroticlone.Content
+
+  @remote_url "http://34.128.83.247/"
 
   @moduledoc """
   Eroticlone keeps the contexts that define your domain
@@ -256,6 +259,38 @@ defmodule Eroticlone do
         {:error, _} ->
           {:error, "Cannot generate image prompt"}
       end
+    end
+  end
+
+  # Eroticlone.generate_remote_image("the-erotic-adventures-of-superman")
+  def generate_remote_image(slug) do
+    case HTTPoison.get(@remote_url <> "api/stories/#{slug}") do
+      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+        story = Jason.decode!(body)
+
+        if is_nil(story["image_prompt"]) do
+          {:error, "No image prompt found"}
+        else
+          prompt = %{
+            prompt: story.image_prompt,
+            width: 384,
+            height: 512
+          }
+
+          case DrawThings.draw_only(prompt) do
+            {:ok, file_raw} ->
+              HTTPoison.post(
+                @remote_url <> "api/stories/#{slug}",
+                Jason.encode!(%{"image_raw" => file_raw})
+              )
+
+            {:error, _} ->
+              {:error, "Cannot create images"}
+          end
+        end
+
+      _ ->
+        {:error, "Cannot get story"}
     end
   end
 

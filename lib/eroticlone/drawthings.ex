@@ -5,7 +5,7 @@ defmodule DrawThings do
 
   @url "http://localhost:7860/sdapi/v1/txt2img"
 
-  def draw(prompt, story) do
+  def draw_only(prompt) do
     url = @url
 
     headers = [
@@ -19,7 +19,7 @@ defmodule DrawThings do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         case Jason.decode(body) do
           {:ok, %{"images" => images}} ->
-            images |> List.first() |> save_image(story.id)
+            {:ok, images |> List.first()}
 
           _other ->
             {:error, "Cannot create images"}
@@ -27,6 +27,16 @@ defmodule DrawThings do
 
       error ->
         IO.inspect(error)
+        {:error, "Cannot create images"}
+    end
+  end
+
+  def draw(prompt, story) do
+    case draw_only(prompt) do
+      {:ok, image} ->
+        save_image(image, story.id)
+
+      {:error, _} ->
         {:error, "Cannot create images"}
     end
   end

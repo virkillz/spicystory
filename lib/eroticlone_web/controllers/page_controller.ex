@@ -77,6 +77,24 @@ defmodule EroticloneWeb.PageController do
     end
   end
 
+  def get_story(conn, %{"slug" => slug}) do
+    case Content.get_story_by_slug(slug) do
+      nil ->
+        conn |> put_status(404) |> text("404")
+
+      story ->
+        json = %{
+          id: story.id,
+          title: story.title,
+          image: story.image,
+          is_bookmarked: story.is_bookmarked,
+          image_prompt: story.image_prompt
+        }
+
+        json(conn, json)
+    end
+  end
+
   def update_story(conn, %{"slug" => slug, "story" => story_params}) do
     case Content.get_story_by_slug(slug) do
       nil ->
