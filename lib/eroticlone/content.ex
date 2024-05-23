@@ -81,6 +81,14 @@ defmodule Eroticlone.Content do
     Repo.aggregate(query, :count, :id)
   end
 
+  def count_bookmarked_stories do
+    query =
+      from s in Story,
+        where: s.is_bookmarked == true
+
+    Repo.aggregate(query, :count, :id)
+  end
+
   def get_story_by_slug(slug) do
     query =
       from s in Story,

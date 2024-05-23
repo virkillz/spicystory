@@ -35,19 +35,19 @@ defmodule EroticloneWeb.PageController do
 
   def dashboard(conn, _params) do
     all = Content.count_all_stories()
-    finished = Content.count_finished_stories()
     images = Content.count_story_with_images()
+    published = Content.count_bookmarked_stories()
 
-    percentage = finished / all * 100
+    percentage = published / all * 100
 
     data = %{
       all: all,
-      finished: finished,
+      finished: published,
       image_count: images,
       percentage: Float.round(percentage, 4)
     }
 
-    render(conn, "dashboard.html", data: data)
+    render(conn, "dashboard.html", data: data, layout: false)
   end
 
   def published_index(conn, params) do
