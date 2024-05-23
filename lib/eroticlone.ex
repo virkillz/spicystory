@@ -1,5 +1,4 @@
 defmodule Eroticlone do
-  alias Hex.HTTP
   alias Eroticlone.Content
 
   @remote_url "http://34.128.83.247/"

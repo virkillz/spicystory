@@ -31,7 +31,7 @@ defmodule EroticloneWeb.Router do
   scope "/api", EroticloneWeb do
     pipe_through :api
 
-    get "/stories/:slug", PageController, :get_stories
+    get "/stories/:slug", PageController, :get_story
     post "/stories", PageController, :post_story
     post "/stories/:slug", PageController, :update_story
   end
