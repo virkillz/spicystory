@@ -13,7 +13,7 @@ config :eroticlone,
 
 # Configures the endpoint
 config :eroticlone, EroticloneWeb.Endpoint,
-  url: [host: "localhost"],
+  url: [host: "34.128.83.247"],
   adapter: Bandit.PhoenixAdapter,
   render_errors: [
     formats: [html: EroticloneWeb.ErrorHTML, json: EroticloneWeb.ErrorJSON],

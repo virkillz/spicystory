@@ -16,6 +16,8 @@ defmodule EroticloneWeb.Router do
 
   pipeline :api do
     plug :accepts, ["json"]
+
+    post "/stories", EroticloneWeb.PageController, :post_story
   end
 
   scope "/", EroticloneWeb do

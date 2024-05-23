@@ -75,4 +75,14 @@ defmodule EroticloneWeb.PageController do
       |> redirect(to: "/stories/#{id}")
     end
   end
+
+  def post_story(conn, story_params) do
+    case Content.create_story(story_params) do
+      {:ok, story} ->
+        conn |> json(%{id: story.id})
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        conn |> put_status(422) |> json(%{errors: changeset.errors})
+    end
+  end
 end
