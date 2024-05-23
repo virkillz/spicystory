@@ -5,11 +5,12 @@ defmodule EroticloneWeb.PageController do
 
   def show(conn, %{"slug" => slug}) do
     story = Content.get_story_by_slug(slug)
+    next_story = Content.get_random_story()
 
     if is_nil(story) do
       conn |> put_status(404) |> text("404")
     else
-      render(conn, "home.html", story: story, layout: false)
+      render(conn, "home.html", story: story, next_url: next_story.slug, layout: false)
     end
   end
 

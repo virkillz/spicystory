@@ -51,7 +51,8 @@ defmodule Eroticlone.Content do
     query =
       from s in Story,
         where: s.is_bookmarked == true,
-        preload: [:pages]
+        preload: [:pages],
+        order_by: s.id
 
     Repo.paginate(query, params)
   end
@@ -137,8 +138,7 @@ defmodule Eroticlone.Content do
     query =
       from s in Story,
         limit: 1,
-        where: s.status == "finished",
-        where: not is_nil(s.image),
+        where: s.is_bookmarked == true,
         order_by: fragment("RANDOM()")
 
     Repo.one(query)
