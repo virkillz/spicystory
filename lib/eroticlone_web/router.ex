@@ -32,6 +32,7 @@ defmodule EroticloneWeb.Router do
     pipe_through :api
 
     post "/stories", PageController, :post_story
+    post "/stories/:slug", PageController, :update_story
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development

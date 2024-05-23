@@ -19,6 +19,7 @@ defmodule Eroticlone.Content.Story do
     field :is_read, :boolean, default: false
     field :is_approved, :boolean, default: false
     field :slug, :string
+    field :image_raw, :string, virtual: true
 
     timestamps(type: :utc_datetime)
 
@@ -48,5 +49,30 @@ defmodule Eroticlone.Content.Story do
     ])
     |> validate_required([:link])
     |> unique_constraint(:link)
+  end
+
+  def changeset_update_remote(story, attrs) do
+    story
+    |> cast(attrs, [
+      :image,
+      :is_bookmarked,
+      :image_raw
+    ])
+    |> process_image()
+  end
+
+  defp process_image(changeset) do
+    image_raw = get_field(changeset, :image_raw)
+    id = get_field(changeset, :id)
+
+    IO.inspect(id)
+
+    case DrawThings.save_image(image_raw, id) do
+      {:ok, image_filename} ->
+        put_change(changeset, :image, image_filename)
+
+      {:error, _} ->
+        changeset |> add_error(:image, "Failed to save image")
+    end
   end
 end

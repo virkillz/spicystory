@@ -19,7 +19,7 @@ defmodule DrawThings do
       {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
         case Jason.decode(body) do
           {:ok, %{"images" => images}} ->
-            images |> List.first() |> save_image(story)
+            images |> List.first() |> save_image(story.id)
 
           _other ->
             {:error, "Cannot create images"}
@@ -31,13 +31,17 @@ defmodule DrawThings do
     end
   end
 
-  def save_image(image, story) do
+  def save_image(image, story_id) do
     location = Path.absname("priv/static/images/")
-    file_name = Nanoid.generate() <> "image_#{story.id}.png"
+    file_name = Nanoid.generate() <> "image_#{story_id}.png"
     path = "#{location}/#{file_name}"
 
-    File.write(path, Base.decode64!(image))
+    case File.write(path, Base.decode64!(image)) |> IO.inspect() do
+      :ok ->
+        {:ok, file_name}
 
-    {:ok, file_name}
+      _error ->
+        {:error, "Cannot save image"}
+    end
   end
 end

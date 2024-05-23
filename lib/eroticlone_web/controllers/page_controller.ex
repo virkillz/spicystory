@@ -77,6 +77,22 @@ defmodule EroticloneWeb.PageController do
     end
   end
 
+  def update_story(conn, %{"slug" => slug, "story" => story_params}) do
+    case Content.get_story_by_slug(slug) do
+      nil ->
+        conn |> put_status(404) |> text("404")
+
+      story ->
+        case Content.update_story_remotely(story, story_params) do
+          {:ok, story} ->
+            conn |> json(%{id: story.id})
+
+          {:error, %Ecto.Changeset{} = changeset} ->
+            conn |> put_status(422) |> json(%{errors: "Failed to update story"})
+        end
+    end
+  end
+
   def post_story(conn, story_params) do
     case Content.create_story(story_params) do
       {:ok, story} ->

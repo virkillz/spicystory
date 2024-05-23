@@ -40,6 +40,12 @@
   <% end %>
 
   <%= raw(@story.content) %>
+
+  <%= for page <- @story.pages do %>
+
+  <%= raw(page.content) %>
+
+  <% end %>
 </div>
 
 

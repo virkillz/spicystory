@@ -84,7 +84,8 @@ defmodule Eroticlone.Content do
   def get_story_by_slug(slug) do
     query =
       from s in Story,
-        where: s.slug == ^slug
+        where: s.slug == ^slug,
+        preload: [:pages]
 
     Repo.one(query)
   end
@@ -206,6 +207,12 @@ defmodule Eroticlone.Content do
   def update_story(%Story{} = story, attrs) do
     story
     |> Story.changeset(attrs)
+    |> Repo.update()
+  end
+
+  def update_story_remotely(%Story{} = story, attrs) do
+    story
+    |> Story.changeset_update_remote(attrs)
     |> Repo.update()
   end
 
