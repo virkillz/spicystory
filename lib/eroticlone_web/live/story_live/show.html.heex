@@ -7,13 +7,14 @@
     <div class="flex text-xs mt-2">
     <%= for {k, v} <- Jason.decode!(@story.metadata) |> Enum.filter(fn {k,_v} -> k != "comments" end) do %>
 
-    <%= if k == "max_page" do %>
-      <div class="mr-2"> Page: <%= v %> / <%= (@story.pages |> Enum.count) + 1 %> </div>
-    <% else %>
+      <%= if k == "max_page" do %>
+        <div class="mr-2"> Page: <%= v %> / <%= (@story.pages |> Enum.count) + 1 %> </div>
+      <% else %>
 
-    <div class="mr-2"> <%= String.capitalize(k) %>: <%= v %> </div>
+      <div class="mr-2"> <%= String.capitalize(k) %>: <%= v %> </div>
+      <% end %>
     <% end %>
-    <% end %>
+      <div class="mr-2"> Time : <%= @time_to_read %> min </div>
 
     </div>
 

@@ -11,25 +11,22 @@ defmodule EroticloneWeb.StoryLive.Show do
 
   @impl true
   def handle_params(%{"id" => id}, _, socket) do
-    story = Content.get_story!(id) |> IO.inspect()
+    story = Content.get_story!(id)
 
-    display_story =
-      if is_nil(story.content) do
-        case Eroticlone.process(story) do
-          {:ok, new_story} ->
-            new_story
+    pages = story.pages |> Enum.map(& &1.content)
 
-          {:error, _} ->
-            story
-        end
-      else
-        story
-      end
+    time_to_read =
+      [story.content | pages]
+      |> Enum.join(" ")
+      |> String.split(" ")
+      |> Enum.count()
+      |> div(200)
 
     {:noreply,
      socket
      |> assign(:page_title, page_title(socket.assigns.live_action))
-     |> assign(:story, display_story)}
+     |> assign(:time_to_read, time_to_read)
+     |> assign(:story, story)}
   end
 
   @impl true
