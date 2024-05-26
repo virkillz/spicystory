@@ -1,5 +1,4 @@
 defmodule EroticloneWeb.Router do
-  alias Eroticlone.Content.Story
   use EroticloneWeb, :router
 
   import EroticloneWeb.UserAuth
@@ -31,6 +30,7 @@ defmodule EroticloneWeb.Router do
   scope "/api", EroticloneWeb do
     pipe_through :api
 
+    get "/stories/no-image", PageController, :get_no_images
     get "/stories/:slug", PageController, :get_story
     post "/stories", PageController, :post_story
     post "/stories/:slug", PageController, :update_story
@@ -75,6 +75,8 @@ defmodule EroticloneWeb.Router do
     get "/random", PageController, :random
     get "/published", PageController, :published_index
     get "/authors/:author", PageController, :author_index
+    get "/remote/:stories", PageController, :remote_index
+    get "/generate-remote/:slug", PageController, :generate_remote_image
 
     live_session :require_authenticated_user,
       on_mount: [{EroticloneWeb.UserAuth, :ensure_authenticated}] do

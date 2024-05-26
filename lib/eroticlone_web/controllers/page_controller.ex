@@ -33,6 +33,45 @@ defmodule EroticloneWeb.PageController do
     redirect(conn, to: ~p"/show/#{story.slug}")
   end
 
+  def remote_index(conn, _params) do
+    stories = Eroticlone.Remote.list_stories_with_empty_image()
+
+    case stories do
+      {:error, _} ->
+        conn |> put_flash(:error, "Cannot get stories") |> redirect(to: "/")
+
+      {:ok, stories} ->
+        render(conn, "remote.html", stories: stories)
+    end
+  end
+
+  def generate_remote_image(conn, %{"slug" => slug}) do
+    IO.inspect(slug)
+
+    case Eroticlone.Remote.generate_remote_image(slug) do
+      {:error, _} ->
+        conn |> put_flash(:error, "Cannot create images") |> redirect(to: "/remote/stories")
+
+      {:ok, _} ->
+        conn |> put_flash(:info, "Image created") |> redirect(to: "/remote/stories")
+    end
+  end
+
+  def get_no_images(conn, _params) do
+    stories =
+      Content.list_stories_with_empty_image(20)
+      |> Enum.map(fn x ->
+        %{
+          id: x.id,
+          title: x.title,
+          slug: x.slug,
+          image_prompt: x.image_prompt
+        }
+      end)
+
+    json(conn, stories)
+  end
+
   def dashboard(conn, _params) do
     all = Content.count_all_stories()
     images = Content.count_story_with_images()

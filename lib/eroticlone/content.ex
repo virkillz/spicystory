@@ -66,6 +66,16 @@ defmodule Eroticlone.Content do
     Repo.all(query)
   end
 
+  def list_stories_with_empty_image(limit) do
+    query =
+      from s in Story,
+        where: is_nil(s.image),
+        where: s.is_bookmarked == true,
+        limit: ^limit
+
+    Repo.all(query)
+  end
+
   # story = Eroticlone.Content.get_story!(10)
   # Eroticlone.Content.create_slug(story)
   def update_slug(story) do

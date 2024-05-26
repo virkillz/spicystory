@@ -1,0 +1,42 @@
+<.table
+  id="stories"
+  rows={@stories}
+>
+  <:col :let={story} label="ID"><%= story["id"] %></:col>
+  <:col :let={story} label="Title"><%= story["title"] %></:col>
+  <:col :let={story} label="Slug"><%= story["slug"] %></:col>
+  <:col :let={story} label="Prompt"><%= story["image_prompt"] %></:col>
+  <:col :let={story} label="Action">
+
+
+  <%= if is_nil(story["image_prompt"]) do %>
+
+    <.link navigate={Eroticlone.Remote.get_remote_url() <> "/stories/" <> inspect(story["id"])} target="_blank">
+    <.button>
+      Edit
+    </.button>
+    </.link>
+
+    <% else %>
+<div class="flex">
+
+  <.link navigate={Eroticlone.Remote.get_remote_url() <> "/show/" <> story["slug"]} target="_blank">
+    <.button>
+      Show
+    </.button>
+    </.link>
+
+  <.link navigate={"/generate-remote/" <> story["slug"]} class="ml-1">
+    <.button>
+      Generate
+    </.button>
+  </.link>
+
+  </div>
+
+<% end %>
+
+
+  </:col>
+
+</.table>
