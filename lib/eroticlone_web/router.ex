@@ -75,7 +75,7 @@ defmodule EroticloneWeb.Router do
     get "/random", PageController, :random
     get "/published", PageController, :published_index
     get "/authors/:author", PageController, :author_index
-    get "/remote/:stories", PageController, :remote_index
+    get "/remote/stories", PageController, :remote_index
     get "/generate-remote/:slug", PageController, :generate_remote_image
 
     live_session :require_authenticated_user,

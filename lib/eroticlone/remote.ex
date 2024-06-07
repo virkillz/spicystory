@@ -1,8 +1,8 @@
 defmodule Eroticlone.Remote do
   alias Eroticlone.Content
 
-  # @remote_url "http://34.128.83.247"
-  @remote_url "http://localhost:4000/"
+  @remote_url "http://34.128.83.247/"
+  # @remote_url "http://localhost:4000/"
 
   @moduledoc """
   Eroticlone keeps the contexts that define your domain

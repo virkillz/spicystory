@@ -2,6 +2,8 @@ defmodule Eroticlone do
   alias Eroticlone.Content
 
   @remote_url "http://34.128.83.247/"
+  @llm Novitai
+  # @llm Ollama
 
   @moduledoc """
   Eroticlone keeps the contexts that define your domain
@@ -251,7 +253,7 @@ defmodule Eroticlone do
 
       """
 
-      case Ollama.run(ollama_prompt) do
+      case @llm.run(ollama_prompt) do
         {:ok, response} ->
           Content.update_story(story, %{"image_prompt" => response})
 
@@ -266,9 +268,14 @@ defmodule Eroticlone do
       {:error, "No image prompt found"}
     else
       prompt = %{
-        prompt: story.image_prompt,
+        prompt: story.image_prompt <> " <lora:LCM_Lora_SD15:0.97>",
         width: 576,
-        height: 768
+        height: 768,
+        steps: 8,
+        cfg_scale: 1.0,
+        sampler_index: "LCM",
+        scheduler: "SGM Uniform",
+        restore_faces: true
       }
 
       case DrawThings.draw(prompt, story) do

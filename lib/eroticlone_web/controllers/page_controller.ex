@@ -81,7 +81,7 @@ defmodule EroticloneWeb.PageController do
 
     data = %{
       all: all,
-      finished: published,
+      published: published,
       image_count: images,
       percentage: Float.round(percentage, 4)
     }

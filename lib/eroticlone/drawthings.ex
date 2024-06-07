@@ -3,7 +3,8 @@ defmodule DrawThings do
   Documentation for `TryOpenai`.
   """
 
-  @url "http://localhost:7860/sdapi/v1/txt2img"
+  # @url "http://localhost:7860/sdapi/v1/txt2img"
+  @url "https://ollama.isengbeli.com/sdapi/v1/txt2img"
 
   def draw_only(prompt) do
     url = @url
