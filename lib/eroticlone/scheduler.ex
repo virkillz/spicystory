@@ -18,7 +18,7 @@ defmodule Eroticlone.Scheduler do
   def handle_info(:work, state) do
     # spawn(fn -> Eroticlone.process_unstarted(65) end)
 
-    story = Content.get_random_story()
+    story = Content.get_random_story_empty_image()
     Eroticlone.generate_female_image_prompt(story)
 
     # Do the work you desire here

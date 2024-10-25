@@ -163,6 +163,16 @@ defmodule Eroticlone.Content do
     Repo.one(query)
   end
 
+  def get_random_story_empty_image do
+    query =
+      from s in Story,
+        limit: 1,
+        where: is_nil(s.image_prompt),
+        order_by: fragment("RANDOM()")
+
+    Repo.one(query)
+  end
+
   def get_random_finished_story do
     query =
       from s in Story,
