@@ -33,7 +33,11 @@ defmodule EroticloneWeb.PageController do
     if is_nil(story) do
       conn |> put_status(404) |> text("404")
     else
-      json = Map.from_struct(story)
+      json =
+        Map.from_struct(story)
+        |> Map.delete(:__meta__)
+        |> Map.delete(:__struct__)
+        |> Map.delete(:pages)
 
       json(conn, json)
     end
