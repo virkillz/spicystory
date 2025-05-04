@@ -27,6 +27,18 @@ defmodule EroticloneWeb.PageController do
     end
   end
 
+  def get_story_by_id(conn, %{"id" => id}) do
+    story = Content.get_story!(id)
+
+    if is_nil(story) do
+      conn |> put_status(404) |> text("404")
+    else
+      json = Map.from_struct(story)
+
+      json(conn, json)
+    end
+  end
+
   def home(conn, _params) do
     story = Content.get_random_story()
 
