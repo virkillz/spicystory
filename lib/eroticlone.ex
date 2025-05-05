@@ -1,9 +1,9 @@
 defmodule Eroticlone do
   alias Eroticlone.Content
 
-  @remote_url "http://34.128.83.247/"
-  @llm Novitai
-  # @llm Ollama
+  @remote_url "https://ollama.isengbeli.com/"
+  # @llm Novitai
+  @llm Ollama
 
   @moduledoc """
   Eroticlone keeps the contexts that define your domain
@@ -64,7 +64,8 @@ defmodule Eroticlone do
           "tagline" => extract_tagline(body),
           "fav" => validate_fav(metadata.fav),
           "metadata" => Jason.encode!(metadata),
-          "status" => "finished"
+          "status" => "finished",
+          "slug" => story.link |> String.split("s/") |> List.last() |> String.downcase()
         }
 
         Content.update_story(story, story_attrs)
@@ -188,7 +189,7 @@ defmodule Eroticlone do
     Floki.parse_document!(html) |> Floki.find(".h_aZ") |> List.last() |> Floki.text()
   end
 
-  # Eroticlone.save_link_from_category("adult-humor", 1, 22)
+  # Eroticlone.save_link_from_category("taboo-sex-stories", 1, 268)
   def save_link_from_category(category_id, min_page, max_page) do
     Enum.each(min_page..max_page, fn page ->
       url = "https://www.literotica.com/c/#{category_id}/#{page}-page"

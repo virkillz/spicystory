@@ -21,7 +21,10 @@ defmodule EroticloneWeb.Router do
     pipe_through :browser
 
     get "/show/:slug", PageController, :show
+    get "/show/:slug/bookmark", PageController, :bookmark
+    get "/show/:slug/unbookmark", PageController, :unbookmark
     get "/", PageController, :home
+    get "/public_bookmark", PageController, :public_bookmark
     get "/randomize", PageController, :randomize
     get "/dashboard", PageController, :dashboard
     get "/stories/:id/fetch_pages", PageController, :get_remaining_pages
@@ -83,6 +86,8 @@ defmodule EroticloneWeb.Router do
       on_mount: [{EroticloneWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+
+      get "/stories/:id/process", PageController, :process
 
       live "/stories", StoryLive.Index, :index
       live "/stories/new", StoryLive.Index, :new

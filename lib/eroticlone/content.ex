@@ -157,7 +157,8 @@ defmodule Eroticlone.Content do
     query =
       from s in Story,
         limit: 1,
-        where: s.is_bookmarked == true,
+        # where: s.is_bookmarked == true,
+        where: s.status == "finished",
         order_by: fragment("RANDOM()")
 
     Repo.one(query)
@@ -171,6 +172,14 @@ defmodule Eroticlone.Content do
         order_by: fragment("RANDOM()")
 
     Repo.one(query)
+  end
+
+  def bookmark_story(story) do
+    update_story(story, %{is_bookmarked: true})
+  end
+
+  def unbookmark_story(story) do
+    update_story(story, %{is_bookmarked: false})
   end
 
   def get_random_finished_story do
@@ -187,7 +196,7 @@ defmodule Eroticlone.Content do
     query =
       from s in Story,
         limit: ^limit,
-        where: s.status == "finished",
+        # where: s.status == "finished",
         order_by: fragment("RANDOM()")
 
     Repo.all(query)

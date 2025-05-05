@@ -5,6 +5,7 @@
     <div class="text-3xl font-semibold mt-2"><%= @story.title %></div>
     <div class="text-sm my-2"> <%= @story.tagline %></div>
     <div class="flex text-xs mt-2">
+    <%= if not is_nil(@story.metadata) do %>
     <%= for {k, v} <- Jason.decode!(@story.metadata) |> Enum.filter(fn {k,_v} -> k != "comments" end) do %>
 
       <%= if k == "max_page" do %>
@@ -13,6 +14,7 @@
 
       <div class="mr-2"> <%= String.capitalize(k) %>: <%= v %> </div>
       <% end %>
+    <% end %>
     <% end %>
       <div class="mr-2"> Time : <%= @time_to_read %> min </div>
 
@@ -52,7 +54,7 @@
           </button>
         <% end %>
 
-          <.link navigate={~p"/show/#{@story.slug}"}>
+          <.link navigate={~p"/show/#{@story.id}"}>
             <button class="my-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded inline-flex items-center">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 mr-2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
@@ -68,6 +70,7 @@
 <article class="mt-12 text-pretty text-justify font-serif bg-orange-100 rounded-lg p-8 text-gray-800">
 
 <div class="mb-6">
+  <%= if @story.status == "finished" do %>
   <%= if not is_nil(@story.image) do %>
 
     <img src={"/images/#{@story.image}"} class="rounded-lg shadow-lg" alt={@story.title}>
@@ -91,6 +94,11 @@
       </.link>
     <% end %>
 
+  <% end %>
+  <% else %>
+      <.link patch={~p"/stories/#{@story}/process"} >
+        <.button class="my-1 ">Fetch story</.button>
+      </.link>
   <% end %>
 
 

@@ -27,6 +27,25 @@ defmodule EroticloneWeb.PageController do
     end
   end
 
+  def public_bookmark(conn, params) do
+    stories = Content.list_bookmarked_stories(params)
+    render(conn, "public_bookmark.html", stories: stories, layout: false)
+  end
+
+  def bookmark(conn, %{"slug" => slug}) do
+    story = Content.get_story_by_slug(slug)
+    Content.bookmark_story(story)
+
+    redirect(conn, to: ~p"/show/#{story.slug}")
+  end
+
+  def unbookmark(conn, %{"slug" => slug}) do
+    story = Content.get_story_by_slug(slug)
+    Content.unbookmark_story(story)
+
+    redirect(conn, to: ~p"/show/#{story.slug}")
+  end
+
   def get_story_by_id(conn, %{"id" => id}) do
     story = Content.get_story!(id)
 
@@ -91,18 +110,30 @@ defmodule EroticloneWeb.PageController do
   def dashboard(conn, _params) do
     all = Content.count_all_stories()
     images = Content.count_story_with_images()
-    published = Content.count_bookmarked_stories()
+    finished = Content.count_finished_stories()
 
-    percentage = published / all * 100
+    percentage = finished / all * 100
 
     data = %{
       all: all,
-      published: published,
+      finished: finished,
       image_count: images,
       percentage: Float.round(percentage, 4)
     }
 
     render(conn, "dashboard.html", data: data, layout: false)
+  end
+
+  def process(conn, %{"id" => id}) do
+    story = Content.get_story!(id)
+
+    case Eroticlone.process(story) do
+      {:ok, _} ->
+        conn |> put_flash(:info, "Story processed") |> redirect(to: "/stories/#{id}")
+
+      {:error, _} ->
+        conn |> put_flash(:error, "Cannot process story") |> redirect(to: "/stories/#{id}")
+    end
   end
 
   def published_index(conn, params) do
